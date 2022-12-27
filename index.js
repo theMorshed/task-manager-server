@@ -40,8 +40,8 @@ async function run() {
             res.send(result);
         });
 
-        // update task
-        app.put('/updatetask/:id', async (req, res) => {
+        // complete task
+        app.put('/complete/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true }
@@ -61,6 +61,30 @@ async function run() {
             const result = await taskCollection.deleteOne(filter);
             res.send(result);
         });
+        
+        // get single task
+        app.get('/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await taskCollection.findOne(filter);
+            res.send(result);
+        });
+
+        // update task
+        app.put('/update/:id', async (req, res) => {
+            const task = req.body;
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true }
+            const updatedDoc = {
+                $set: {
+                    task: task.task
+                }
+            }
+            const result = await taskCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        });
+
     }
     finally {
 
